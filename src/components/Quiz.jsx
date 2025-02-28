@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import questions from "../questions";
 import quizImage from "../assets/quiz-complete.png";
 import QuestionTimer from "./QuestionTimer";
 
 export default function Quiz() {
-  const [userAnswers, setUserAnswers] = useState([]); // used to store the options clicked by a user from the set of available options
-  const activeQuestion = userAnswers.length; //used to access the length of answers from the questions.js file
+  const shuffledAnswers = useRef();
+  const [answerState, setAnswerState] = useState("");
+  const [userAnswers, setUserAnswers] = useState([]); // used to store the option/answer clicked by a user from the set of available options/answers
+  const activeQuestion =
+    answerState === "" ? userAnswers.length : userAnswers.length - 1; //used to access the length of answers from the questions.js file
 
   const quizIsOver = activeQuestion === questions.length;
 
@@ -18,30 +21,54 @@ export default function Quiz() {
     );
   }
 
-  //this needs to run after the if statement to ensure that we dont exhaust the length
-  const shuffledAnswers = [...questions[activeQuestion].answers]; //we are accessing the 'answers' object using 'questions[activeQuestion].answers' and spreading them so that we can shuffle them
-  shuffledAnswers.sort(() => Math.random() - 0.5);
-
   //we passed in an argument expected at a click
-  function handleSelectedAnswer(selectedAnswer) {
-    //looping through every element in this array
-    setUserAnswers((prevAnswer) => {
-      return [...prevAnswer, selectedAnswer];
-      // also saving the previous records and accepting new record on click
-    });
+  const handleSelectedAnswer = useCallback(
+    function handleSelectedAnswer(selectedAnswer) {
+      setAnswerState("answered");
+      //looping through every element in this array
+      setUserAnswers((prevAnswer) => {
+        return [...prevAnswer, selectedAnswer];
+        // also saving the previous records and accepting new record on click
+      });
+
+      setTimeout(() => {
+        if (selectedAnswer === questions[activeQuestion].answers[0]) {
+          setAnswerState("right");
+        } else {
+          setAnswerState("wrong");
+        }
+
+        setTimeout(() => {
+          setAnswerState("");
+        }, 2000);
+      }, 1000);
+    },
+    [activeQuestion],
+  );
+
+  const skipAnswer = useCallback(
+    () => handleSelectedAnswer(null),
+    [handleSelectedAnswer],
+  );
+
+  if (!shuffledAnswers.current) {
+    //this needs to run after the if statement to ensure that we dont exhaust the length
+    shuffledAnswers.current = [...questions[activeQuestion].answers]; //we are accessing the 'answers' object using 'questions[activeQuestion].answers' and spreading them so that we can shuffle them
+    shuffledAnswers.current.sort(() => Math.random() - 0.5);
   }
 
   return (
     <div className="flex w-[50vw] flex-col items-center gap-8 rounded-lg bg-blue-900 p-6">
       <QuestionTimer
         timeOut={10000}
-        onTimeOut={() => handleSelectedAnswer(null)}
+        onTimeOut={skipAnswer}
+        key={activeQuestion}
       />
       <h2 className="text-2xl font-semibold">
         {questions[activeQuestion].text}
       </h2>
       <div className="flex w-full flex-col gap-4">
-        {shuffledAnswers.map((answer) => {
+        {shuffledAnswers.current.map((answer) => {
           //make sure to write a 'return' keyword after '{' above
           return (
             <div>
