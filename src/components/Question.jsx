@@ -30,7 +30,7 @@ export default function Question({ index, onSelectAnswer, onSkipAnswer }) {
   let answerState = "";
 
   if (answer.selectedAnswer && answer.isCorrect !== null) {
-    answerState = answer.isCorrect ? "correct" : "wrong";
+    answerState = answer.isCorrect ? " correct" : " wrong";
   } else if (answer.selectedAnswer) {
     answerState = "answered";
   }
@@ -50,7 +50,6 @@ export default function Question({ index, onSelectAnswer, onSkipAnswer }) {
       <QuestionTimer
         timeOut={timer}
         onTimeOut={answer.selectedAnswer === "" ? onSkipAnswer : null}
-        mode={answerState}
         key={timer}
       />
       <h2 className="text-2xl font-semibold">{questions[index].text}</h2>

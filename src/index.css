@@ -7,3 +7,27 @@ body {
   background-color: #242424;
   font-family: "Manrope";
 }
+
+.selected {
+  @apply w-full rounded-sm bg-purple-600 px-5 py-4 text-center;
+}
+
+.selectedAnswer {
+  @apply w-full rounded-sm bg-purple-600 px-5 py-4 text-center;
+}
+
+.correct {
+  @apply w-full rounded-sm bg-green-600 px-5 py-4 text-center;
+}
+
+.correctAnswer {
+  @apply text-green-600;
+}
+
+.wrong {
+  @apply w-full rounded-sm bg-red-600 px-5 py-4 text-center;
+}
+
+.wrongAnswer {
+  @apply font-medium text-rose-700;
+}

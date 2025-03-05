@@ -1,22 +1,13 @@
 import { useCallback, useState } from "react";
 import questions from "../questions";
-import quizImage from "../assets/quiz-complete.png";
 import Question from "./Question";
+import Summary from "./Summary";
 
 export default function Quiz() {
   const [userAnswers, setUserAnswers] = useState([]); // used to store the option/answer clicked by a user from the set of available options/answers
   const activeQuestion = userAnswers.length; //used to access the length of answers from the questions.js file
 
   const quizIsOver = activeQuestion === questions.length;
-
-  if (quizIsOver) {
-    return (
-      <div className="flex flex-col items-center gap-3">
-        <img src={quizImage} alt="" className="w-[8rem]" />
-        <h2 className="text-3xl font-bold uppercase">Quiz Completed</h2>
-      </div>
-    );
-  }
 
   //we passed in an argument expected at a click
   const handleSelectedAnswer = useCallback(function handleSelectedAnswer(
@@ -33,6 +24,10 @@ export default function Quiz() {
     () => handleSelectedAnswer(null),
     [handleSelectedAnswer],
   );
+
+  if (quizIsOver) {
+    return <Summary userAnswers={userAnswers} />;
+  }
 
   return (
     <div className="flex w-[50vw] flex-col items-center gap-8 rounded-lg bg-blue-900 p-6">

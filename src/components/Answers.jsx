@@ -15,14 +15,15 @@ export default function Answers({
     <div className="flex w-full flex-col gap-4">
       {shuffledAnswers.current.map((answer) => {
         const isSelected = selectedAnswer === answer;
-        let cssClass = "";
+        let cssClass =
+          "w-full cursor-pointer rounded-sm bg-sky-700 px-5 py-4 text-center hover:bg-sky-600";
 
         if (answerState === "answered" && isSelected) {
-          cssClass = "selected";
+          cssClass = " selected";
         }
 
         if (
-          (answerState === "correct" || answerState === "wrong") &&
+          (answerState === " correct" || answerState === " wrong") &&
           isSelected
         ) {
           cssClass = answerState;
@@ -30,9 +31,8 @@ export default function Answers({
 
         //make sure to write a 'return' keyword after '{' above
         return (
-          <div>
+          <div key={answer}>
             <button
-              key={answer}
               onClick={() => onSelect(answer)}
               //   "w-full cursor-pointer rounded-sm bg-sky-700 px-5 py-4 text-center hover:bg-sky-600"
               className={cssClass}
